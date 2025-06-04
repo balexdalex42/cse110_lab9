@@ -181,11 +181,11 @@
       }
     }
     //for global error handling
-    window.onerror = () => {
+    window.onerror = function(message) {
     console.log("Global error caught!");
+    console.log("Message:", message);
     return true;
     };
-    TrackJS.track('Testing TrackJS!');
   </script>
 </body>
 
