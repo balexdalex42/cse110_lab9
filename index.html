@@ -6,6 +6,14 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lab 9</title>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "d037bdcbcfc044ef8344fdeb32efd782"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+  <script src="./customError.js"></script>
 
   <style>
     button {
@@ -69,21 +77,21 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button onclick="printMsg(0)">Console Log</button>
+      <button onclick="printMsg(1)">Console Error</button>
+      <button onclick="printMsg(2)">Console Count</button>
+      <button onclick="printMsg(3)">Console Warn</button>
+      <button onclick="printMsg(4)">Console Assert</button>
+      <button onclick="printMsg(5)">Console Clear</button>
+      <button onclick="printMsg(6)">Console Dir</button>
+      <button onclick="printMsg(7)">Console dirxml</button>
+      <button onclick="printMsg(8)">Console Group Start</button>
+      <button onclick="printMsg(9)">Console Group End</button>
+      <button onclick="printMsg(10)">Console Table</button>
+      <button onclick="printMsg(11)">Start Timer</button>
+      <button onclick="printMsg(12)">End Timer</button>
+      <button onclick="printMsg(13)">Console Trace</button>
+      <button onclick="printMsg(14)">Trigger a Global Error</button>
     </section>
   </main>
 
@@ -92,16 +100,92 @@
     form.addEventListener('submit', e => {
       e.preventDefault();
       let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      //try catch block to make sure the input is valid
+      try{
+        let firstNum = document.querySelector('#first-num').value;
+        let secondNum = document.querySelector('#second-num').value;
+        firstNum = Number(firstNum);
+        secondNum = Number(secondNum); //making these into numbers
+        if (isNaN(firstNum) || isNaN(secondNum)) {
+          throw new InvalidNumberError("Inputs must be valid numbers.");
+        }
+        let operator = document.querySelector('#operator').value;
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      }catch(err){
+        console.error("An error occurred:", err.message);
+        output.innerHTML = err.message;
+      }
+      finally{
+        console.log("Calculation attempt finished");
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+    let i = 1;
+    function printMsg(numStr){
+      let num = Number(numStr);
+      switch(num){
+        case 0:
+          console.log("Console Log Demo");
+          break;
+        case 1:
+          console.error("Console Error Demo");
+          break;
+        case 2:
+          console.count("Console Count Now");
+          break;
+        case 3:
+          console.warn("Console Warn Demo");
+          break;
+        case 4:
+          for(let i = 0; i < 6; i++){
+            const errorMsg = `The number ${i} is not even\n`;
+            console.assert(i % 2 === 0, errorMsg);
+          }
+          break;
+        case 5:
+          console.clear();
+          break;
+        case 6:
+          console.dir(document.querySelectorAll("button"));
+          break;
+        case 7:
+          console.dirxml(document.querySelector("button"));
+          break;
+        case 8:
+          console.group();
+          break;
+        case 9:
+          console.groupEnd();
+          break;
+        case 10:
+          const names = ["Alex", "Ada", "Gaurav", "Parwiz", "Ayaka", "Teoman", "Rahul", "Arturo", "Hui", "William"];
+          console.table(names);
+          break;
+        case 11:
+          console.time();
+          break;
+        case 12:
+          console.timeEnd();
+          break;
+        case 13:
+          console.trace();
+          break;
+        case 14:
+           // <button onclick="printMsg(14)">Trigger a Global Error</button?
+          nonExistentFunc();
+          break;
+      }
+    }
+    //for global error handling
+    window.onerror = () => {
+    console.log("Global error caught!");
+    return true;
+    };
+    TrackJS.track('Testing TrackJS!');
   </script>
 </body>
 
